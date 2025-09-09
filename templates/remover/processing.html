@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in max-w-2xl mx-auto text-center">
+    <!-- Processing Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Processing Your Image</h1>
+        <p class="text-lg text-gray-600">
+            Our AI is working hard to remove the background from your image. This usually takes just a few seconds.
+        </p>
+    </div>
+
+    <!-- Image Preview -->
+    <div class="mb-8">
+        <div class="relative inline-block">
+            <img src="{{ processing.original_image.url }}" 
+                 alt="Original Image" 
+                 class="max-w-full h-64 object-contain rounded-lg shadow-sm border border-gray-200">
+            
+            <!-- Processing Overlay -->
+            <div class="absolute inset-0 bg-blue-500 bg-opacity-20 rounded-lg flex items-center justify-center">
+                <div class="bg-white rounded-full p-4 shadow-lg">
+                    <div class="spinner w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Processing Status -->
+    <div id="status-container" class="mb-8">
+        <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+            <div class="flex items-center justify-center space-x-3 mb-4">
+                <div class="spinner w-6 h-6 border-3 border-primary border-t-transparent rounded-full"></div>
+                <span id="status-text" class="text-lg font-medium text-gray-900">Analyzing image...</span>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2">
+                <div id="progress-bar" class="bg-primary h-2 rounded-full transition-all duration-500" style="width: 25%"></div>
+            </div>
+            
+            <p class="text-sm text-gray-600 mt-2">
+                Please keep this page open while we process your image.
+            </p>
+        </div>
+    </div>
+
+    <!-- Tips Section -->
+    <div class="bg-blue-50 rounded-lg border border-blue-200 p-6 mb-8">
+        <h3 class="text-lg font-semibold text-blue-900 mb-3">Processing Tips</h3>
+        <ul class="text-sm text-blue-800 space-y-2 text-left">
+            <li class="flex items-start space-x-2">
+                <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>The AI analyzes every pixel to identify the subject and background</span>
+            </li>
+            <li class="flex items-start space-x-2">
+                <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Complex images with detailed edges may take a bit longer</span>
+            </li>
+            <li class="flex items-start space-x-2">
+                <svg class="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Your processed image will be ready for download in multiple formats</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Error Container (Initially Hidden) -->
+    <div id="error-container" class="hidden bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+        <div class="flex items-center space-x-3 mb-3">
+            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+            <h3 class="text-lg font-semibold text-red-900">Processing Failed</h3>
+        </div>
+        <p id="error-message" class="text-sm text-red-800 mb-4"></p>
+        <div class="space-x-4">
+            <a href="{% url 'remover:home' %}" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                Try Again
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    const processingId = '{{ processing.id }}';
+    const statusText = $('#status-text');
+    const progressBar = $('#progress-bar');
+    const statusContainer = $('#status-container');
+    const errorContainer = $('#error-container');
+    const errorMessage = $('#error-message');
+    
+    // Status messages
+    const statusMessages = [
+        'Analyzing image...',
+        'Detecting subjects...',
+        'Processing edges...',
+        'Removing background...',
+        'Finalizing image...'
+    ];
+    
+    let currentStep = 0;
+    let progressInterval;
+    let statusCheckInterval;
+    
+    // Start processing immediately
+    startProcessing();
+    
+    function startProcessing() {
+        // Start progress animation
+        startProgressAnimation();
+        
+        // Make AJAX request to start processing
+        $.ajax({
+            url: `/api/process/${processingId}/`,
+            type: 'POST',
+            headers: {
+                'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(response) {
+                if (response.status === 'completed') {
+                    handleSuccess(response.redirect_url);
+                } else if (response.status === 'failed') {
+                    handleError(response.error);
+                }
+            },
+            error: function(xhr) {
+                let errorMsg = 'An unexpected error occurred. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMsg = xhr.responseJSON.error;
+                }
+                handleError(errorMsg);
+            }
+        });
+        
+        // Start periodic status checking as backup
+        statusCheckInterval = setInterval(checkStatus, 2000);
+    }
+    
+    function startProgressAnimation() {
+        let progress = 25;
+        progressBar.css('width', progress + '%');
+        
+        progressInterval = setInterval(function() {
+            currentStep = Math.min(currentStep + 1, statusMessages.length - 1);
+            statusText.text(statusMessages[currentStep]);
+            
+            progress = Math.min(progress + Math.random() * 15, 90);
+            progressBar.css('width', progress + '%');
+            
+            if (progress >= 90) {
+                clearInterval(progressInterval);
+            }
+        }, 1500);
+    }
+    
+    function checkStatus() {
+        $.ajax({
+            url: `/api/status/${processingId}/`,
+            type: 'GET',
+            success: function(response) {
+                if (response.status === 'completed') {
+                    handleSuccess(`/result/${processingId}/`);
+                } else if (response.status === 'failed') {
+                    handleError(response.error_message || 'Processing failed');
+                }
+            },
+            error: function() {
+                // Continue checking - don't show error for status checks
+            }
+        });
+    }
+    
+    function handleSuccess(redirectUrl) {
+        clearInterval(progressInterval);
+        clearInterval(statusCheckInterval);
+        
+        statusText.text('Processing complete!');
+        progressBar.css('width', '100%');
+        
+        setTimeout(function() {
+            window.location.href = redirectUrl;
+        }, 1000);
+    }
+    
+    function handleError(error) {
+        clearInterval(progressInterval);
+        clearInterval(statusCheckInterval);
+        
+        statusContainer.addClass('hidden');
+        errorMessage.text(error);
+        errorContainer.removeClass('hidden');
+    }
+    
+    // Clean up intervals when page unloads
+    $(window).on('beforeunload', function() {
+        if (progressInterval) clearInterval(progressInterval);
+        if (statusCheckInterval) clearInterval(statusCheckInterval);
+    });
+});
+</script>
+{% endblock %}

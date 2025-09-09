@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Background Removed Successfully! 🎉</h1>
+        <p class="text-lg text-gray-600">
+            Your image has been processed. Use the before/after slider to see the results and choose your download option.
+        </p>
+    </div>
+
+    <!-- Processed Image Display -->
+    <div class="mb-8">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4 text-center">Background Removed Successfully!</h2>
+            
+            <!-- Processed Image Container -->
+            <div class="relative bg-transparent rounded-lg overflow-hidden" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\' viewBox=\'0 0 20 20\'><rect width=\'10\' height=\'10\' fill=\'%23f3f4f6\'/><rect x=\'10\' y=\'10\' width=\'10\' height=\'10\' fill=\'%23f3f4f6\'/></svg>'); background-size: 20px 20px;">
+                <!-- Background Layer -->
+                <div id="background-layer" class="absolute inset-0" style="background-color: transparent;"></div>
+                
+                <!-- Processed Image -->
+                <div class="relative">
+                    <img id="processed-image" 
+                         src="{{ processing.processed_image.url }}" 
+                         alt="Processed Image" 
+                         class="w-full h-auto object-contain mx-auto max-h-96">
+                </div>
+            </div>
+            
+            <!-- Background Color Options -->
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Choose Background Color</h3>
+                
+                <!-- Preset Colors -->
+                <div class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-4">
+                    <button type="button" class="color-option relative w-full h-12 rounded-lg border-2 border-gray-200 hover:border-primary focus:border-primary focus:outline-none transition-colors" 
+                            data-color="transparent" 
+                            style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'20\' height=\'20\' viewBox=\'0 0 20 20\'><rect width=\'10\' height=\'10\' fill=\'%23f3f4f6\'/><rect x=\'10\' y=\'10\' width=\'10\' height=\'10\' fill=\'%23f3f4f6\'/></svg>'); background-size: 10px 10px;">
+                        <span class="absolute inset-0 flex items-center justify-center text-xs font-medium text-gray-700">Transparent</span>
+                    </button>
+                    
+                    <button type="button" class="color-option w-full h-12 rounded-lg border-2 border-gray-200 hover:border-primary focus:border-primary focus:outline-none transition-colors bg-white" 
+                            data-color="#ffffff">
+                        <span class="text-xs font-medium text-gray-700">White</span>
+                    </button>
+                    
+                    <button type="button" class="color-option w-full h-12 rounded-lg border-2 border-gray-200 hover:border-primary focus:border-primary focus:outline-none transition-colors bg-black" 
+                            data-color="#000000">
+                        <span class="text-xs font-medium text-white">Black</span>
+                    </button>
+                    
+                    <button type="button" class="color-option w-full h-12 rounded-lg border-2 border-gray-200 hover:border-primary focus:border-primary focus:outline-none transition-colors bg-gray-500" 
+                            data-color="#6b7280">
+                        <span class="text-xs font-medium text-white">Gray</span>
+                    </button>
+                    
+                    <button type="button" class="color-option w-full h-12 rounded-lg border-2 border-gray-200 hover:border-primary focus:border-primary focus:outline-none transition-colors bg-blue-500" 
+                            data-color="#3b82f6">
+                        <span class="text-xs font-medium text-white">Blue</span>
+                    </button>
+                    
+                    <button type="button" class="color-option w-full h-12 rounded-lg border-2 border-gray-200 hover:border-primary focus:border-primary focus:outline-none transition-colors bg-red-500" 
+                            data-color="#ef4444">
+                        <span class="text-xs font-medium text-white">Red</span>
+                    </button>
+                </div>
+                
+                <!-- Custom Color Input -->
+                <div class="flex items-center space-x-3">
+                    <label for="custom-color" class="text-sm font-medium text-gray-700">Custom Color:</label>
+                    <input type="color" 
+                           id="custom-color" 
+                           class="w-12 h-8 rounded border border-gray-300 cursor-pointer"
+                           value="#ffffff">
+                    <input type="text" 
+                           id="hex-input" 
+                           class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                           placeholder="#ffffff"
+                           maxlength="7"
+                           pattern="^#[0-9A-Fa-f]{6}$">
+                    <button type="button" 
+                            id="apply-custom-color" 
+                            class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors">
+                        Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Options -->
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-6">Download Options</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Transparent PNG -->
+                <div class="text-center p-6 bg-gray-50 rounded-lg border border-gray-200 hover:border-primary hover:bg-blue-50 transition-colors">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-white rounded-lg shadow-sm border-2 border-dashed border-gray-300 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v16a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Transparent Background</h3>
+                    <p class="text-sm text-gray-600 mb-4">Perfect for overlaying on other backgrounds</p>
+                    <a href="{% url 'remover:download' pk=processing.id %}?bg=transparent" 
+                       class="inline-flex items-center justify-center w-full px-4 py-2 bg-primary hover:bg-secondary text-white font-medium rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Download PNG
+                    </a>
+                </div>
+
+                <!-- Current Background -->
+                <div class="text-center p-6 bg-gray-50 rounded-lg border border-gray-200 hover:border-primary hover:bg-blue-50 transition-colors">
+                    <div id="download-preview" class="w-16 h-16 mx-auto mb-4 rounded-lg shadow-sm border border-gray-200 flex items-center justify-center" style="background-color: transparent;">
+                        <div class="w-8 h-8 bg-gray-400 rounded opacity-50"></div>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Current Background</h3>
+                    <p class="text-sm text-gray-600 mb-4" id="current-bg-text">Download with current background color</p>
+                    <button id="download-current" 
+                            class="inline-flex items-center justify-center w-full px-4 py-2 bg-primary hover:bg-secondary text-white font-medium rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Download JPG
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Details -->
+    <div class="max-w-4xl mx-auto mb-8">
+        <div class="bg-gray-50 rounded-lg border border-gray-200 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Processing Details</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                <div>
+                    <span class="font-medium text-gray-900">Original Size:</span>
+                    <span class="text-gray-600">
+                        {{ processing.original_width }} × {{ processing.original_height }}px
+                    </span>
+                </div>
+                <div>
+                    <span class="font-medium text-gray-900">File Size:</span>
+                    <span class="text-gray-600">
+                        {% if processing.original_size %}
+                            {% if processing.original_size > 1048576 %}
+                                {{ processing.original_size|floatformat:1|cut:".0" }} MB
+                            {% else %}
+                                {{ processing.original_size|floatformat:0 }} KB
+                            {% endif %}
+                        {% else %}
+                            Unknown
+                        {% endif %}
+                    </span>
+                </div>
+                <div>
+                    <span class="font-medium text-gray-900">Processing Time:</span>
+                    <span class="text-gray-600">
+                        {% if processing.processing_duration %}
+                            {{ processing.processing_duration|floatformat:1 }}s
+                        {% else %}
+                            < 1s
+                        {% endif %}
+                    </span>
+                </div>
+                <div>
+                    <span class="font-medium text-gray-900">Format:</span>
+                    <span class="text-gray-600">PNG with transparency</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-center space-x-4">
+        <a href="{% url 'remover:home' %}" 
+           class="inline-flex items-center px-6 py-3 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 font-medium rounded-lg transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+            Process Another Image
+        </a>
+        
+        <button onclick="shareResults()" 
+                class="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+            </svg>
+            Share Results
+        </button>
+    </div>
+
+    <!-- Privacy Notice -->
+    <div class="mt-8 text-center text-sm text-gray-500">
+        <p>
+            🔒 Your images are automatically deleted after 24 hours for privacy and security.
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    const backgroundLayer = $('#background-layer');
+    const downloadPreview = $('#download-preview');
+    const currentBgText = $('#current-bg-text');
+    const downloadCurrentBtn = $('#download-current');
+    const customColorPicker = $('#custom-color');
+    const hexInput = $('#hex-input');
+    const applyCustomBtn = $('#apply-custom-color');
+    
+    let currentBackgroundColor = 'transparent';
+    
+    // Handle preset color buttons
+    $('.color-option').on('click', function() {
+        const color = $(this).data('color');
+        applyBackgroundColor(color);
+        updateActiveColorButton($(this));
+    });
+    
+    // Handle custom color picker
+    customColorPicker.on('change', function() {
+        const color = $(this).val();
+        hexInput.val(color);
+    });
+    
+    // Handle hex input
+    hexInput.on('input', function() {
+        const hex = $(this).val();
+        if (isValidHex(hex)) {
+            customColorPicker.val(hex);
+        }
+    });
+    
+    // Apply custom color button
+    applyCustomBtn.on('click', function() {
+        const color = customColorPicker.val();
+        if (isValidHex(color)) {
+            applyBackgroundColor(color);
+            updateActiveColorButton(null); // Clear preset selection
+        } else {
+            alert('Please enter a valid hex color code (e.g., #ffffff)');
+        }
+    });
+    
+    // Apply background color
+    function applyBackgroundColor(color) {
+        currentBackgroundColor = color;
+        
+        if (color === 'transparent') {
+            backgroundLayer.css('background-color', 'transparent');
+            downloadPreview.css('background-color', 'transparent');
+            downloadPreview.html('<div class="w-8 h-8 bg-gray-400 rounded opacity-50"></div>');
+            currentBgText.text('Transparent background');
+            downloadCurrentBtn.find('span:last').text('Download PNG');
+        } else {
+            backgroundLayer.css('background-color', color);
+            downloadPreview.css('background-color', color);
+            downloadPreview.html('');
+            currentBgText.text(`Background color: ${color.toUpperCase()}`);
+            downloadCurrentBtn.find('span:last').text('Download JPG');
+        }
+    }
+    
+    // Update active color button
+    function updateActiveColorButton(activeBtn) {
+        $('.color-option').removeClass('border-primary').addClass('border-gray-200');
+        if (activeBtn) {
+            activeBtn.removeClass('border-gray-200').addClass('border-primary');
+        }
+    }
+    
+    // Validate hex color
+    function isValidHex(hex) {
+        return /^#[0-9A-Fa-f]{6}$/.test(hex);
+    }
+    
+    // Handle download current background
+    downloadCurrentBtn.on('click', function() {
+        let url = `{% url 'remover:download' pk=processing.id %}`;
+        if (currentBackgroundColor === 'transparent') {
+            url += '?bg=transparent';
+        } else {
+            url += `?bg=custom&color=${encodeURIComponent(currentBackgroundColor)}`;
+        }
+        window.location.href = url;
+    });
+    
+    // Initialize with transparent background
+    applyBackgroundColor('transparent');
+    updateActiveColorButton($('.color-option[data-color="transparent"]'));
+});
+
+function shareResults() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'AI Background Remover Results',
+            text: 'Check out my background removal results!',
+            url: window.location.href
+        }).catch(console.error);
+    } else {
+        // Fallback: copy URL to clipboard
+        navigator.clipboard.writeText(window.location.href).then(function() {
+            alert('Link copied to clipboard!');
+        }).catch(function() {
+            alert('Unable to share. URL: ' + window.location.href);
+        });
+    }
+}
+</script>
+{% endblock %}

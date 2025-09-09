@@ -1,0 +1,10 @@
+Django==4.2.7
+Pillow>=10.0.0
+requests>=2.31.0
+python-decouple>=3.8
+gunicorn>=21.2.0
+whitenoise>=6.6.0
+rembg>=2.0.50
+numpy>=1.21.0
+opencv-python>=4.8.0
+onnxruntime>=1.22.0

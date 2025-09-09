@@ -1,0 +1,488 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in">
+    <!-- Hero Section -->
+    <div class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Remove Backgrounds with AI
+        </h1>
+        <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            Upload any image and our AI will automatically remove the background in seconds. 
+            No signup required. Fast, accurate, and free.
+        </p>
+        
+        <!-- Features -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Lightning Fast</h3>
+                <p class="text-gray-600">Process images in seconds with our advanced AI technology.</p>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">High Quality</h3>
+                <p class="text-gray-600">Precise edge detection for professional results.</p>
+            </div>
+            
+            <div class="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Secure & Private</h3>
+                <p class="text-gray-600">Files are automatically deleted after 24 hours.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="max-w-2xl mx-auto">
+        <form id="upload-form" method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Upload Area -->
+            <div id="drop-zone" class="relative border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary focus-within:border-primary focus-within:ring-2 focus-within:ring-primary focus-within:ring-opacity-20 transition-all duration-200 cursor-pointer bg-gray-50 hover:bg-gray-100">
+                
+                <!-- Hidden File Input -->
+                {{ form.original_image }}
+                
+                <!-- Upload Content -->
+                <div id="upload-content" class="space-y-4">
+                    <!-- Upload Icon -->
+                    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-white shadow-sm border border-gray-200">
+                        <svg class="h-8 w-8 text-primary" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </div>
+                    
+                    <!-- Upload Text -->
+                    <div class="space-y-2">
+                        <p class="text-lg font-semibold text-gray-900">Drop your image here</p>
+                        <p class="text-base text-gray-600">or <span class="text-primary font-medium underline">click to browse</span></p>
+                        <p class="text-sm text-gray-500">
+                            Supports JPG, PNG, WebP • Max 25MB • Min 50x50px
+                        </p>
+                    </div>
+                    
+                    <!-- Browse Button (Visible Alternative) -->
+                    <button type="button" id="browse-button" class="inline-flex items-center px-4 py-2 border border-primary text-sm font-medium rounded-md text-primary bg-white hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+                        <svg class="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Choose File
+                    </button>
+                </div>
+                
+                <!-- Preview Container -->
+                <div id="preview-container" class="hidden">
+                    <!-- Image Preview -->
+                    <div class="relative inline-block mb-4">
+                        <img id="preview-image" class="max-w-full max-h-64 object-contain rounded-lg shadow-md border border-gray-200" alt="Preview">
+                        <button type="button" id="remove-image" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors shadow-sm" title="Remove image">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- File Info -->
+                    <div class="space-y-2">
+                        <p id="file-name" class="text-sm font-medium text-gray-900"></p>
+                        <p id="file-info" class="text-xs text-gray-500"></p>
+                        <button type="button" id="change-file" class="text-sm text-primary hover:text-secondary underline">
+                            Change file
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Drag Over State -->
+                <div id="drag-overlay" class="absolute inset-0 bg-primary bg-opacity-10 border-2 border-primary border-dashed rounded-lg hidden">
+                    <div class="flex items-center justify-center h-full">
+                        <div class="text-center">
+                            <svg class="mx-auto h-12 w-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l8-8m0 0l8 8m-8-8v24"></path>
+                            </svg>
+                            <p class="mt-2 text-lg font-semibold text-primary">Drop to upload</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Loading State -->
+                <div id="upload-loading" class="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center hidden rounded-lg">
+                    <div class="text-center">
+                        <div class="spinner w-8 h-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-3"></div>
+                        <p class="text-sm font-medium text-gray-700">Uploading...</p>
+                        <p class="text-xs text-gray-500 mt-1">Please wait</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Errors -->
+            {% if form.original_image.errors %}
+                <div class="rounded-md bg-red-50 p-4 border border-red-200">
+                    <div class="text-sm text-red-800">
+                        {% for error in form.original_image.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            <!-- Submit Button -->
+            <div class="text-center">
+                <button type="submit" id="submit-btn" class="bg-primary hover:bg-secondary text-white font-bold py-3 px-8 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <span class="flex items-center justify-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2-2v16a2 2 0 002 2z"></path>
+                        </svg>
+                        <span>Remove Background</span>
+                    </span>
+                </button>
+            </div>
+        </form>
+        
+        <!-- Help Text -->
+        <div class="mt-8 text-center text-sm text-gray-600">
+            <p>
+                <strong>Tips:</strong> Images with clear subjects work best. 
+                For optimal results, ensure good contrast between the subject and background.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // DOM Elements
+    const dropZone = $('#drop-zone');
+    const fileInput = $('#image-upload');
+    const browseButton = $('#browse-button');
+    const uploadContent = $('#upload-content');
+    const previewContainer = $('#preview-container');
+    const previewImage = $('#preview-image');
+    const fileName = $('#file-name');
+    const fileInfo = $('#file-info');
+    const removeBtn = $('#remove-image');
+    const changeFileBtn = $('#change-file');
+    const submitBtn = $('#submit-btn');
+    const uploadForm = $('#upload-form');
+    const uploadLoading = $('#upload-loading');
+    const dragOverlay = $('#drag-overlay');
+    
+    let dragCounter = 0;
+    
+    // Initialize
+    init();
+    
+    function init() {
+        // Prevent default drag behaviors on document
+        $(document).on('dragenter dragover dragleave drop', preventDefaults);
+        
+        // Drop zone events
+        dropZone.on('dragenter', handleDragEnter);
+        dropZone.on('dragover', handleDragOver);
+        dropZone.on('dragleave', handleDragLeave);
+        dropZone.on('drop', handleDrop);
+        
+        // Click events
+        dropZone.on('click', handleDropZoneClick);
+        browseButton.on('click', handleBrowseClick);
+        changeFileBtn.on('click', handleChangeFile);
+        
+        // File input change
+        fileInput.on('change', handleFileInputChange);
+        
+        // Remove image
+        removeBtn.on('click', handleRemoveImage);
+        
+        // Form submission
+        uploadForm.on('submit', handleFormSubmit);
+    }
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    function handleDragEnter(e) {
+        preventDefaults(e);
+        dragCounter++;
+        if (dragCounter === 1) {
+            showDragOverlay();
+        }
+    }
+    
+    function handleDragOver(e) {
+        preventDefaults(e);
+        showDragOverlay();
+    }
+    
+    function handleDragLeave(e) {
+        preventDefaults(e);
+        dragCounter--;
+        if (dragCounter === 0) {
+            hideDragOverlay();
+        }
+    }
+    
+    function handleDrop(e) {
+        preventDefaults(e);
+        dragCounter = 0;
+        hideDragOverlay();
+        
+        const files = e.originalEvent.dataTransfer.files;
+        if (files && files.length > 0) {
+            handleFiles(files);
+        }
+    }
+    
+    function handleDropZoneClick(e) {
+        // Don't trigger file dialog if clicking on interactive elements
+        if ($(e.target).closest('#remove-image, #change-file, #browse-button').length) {
+            return;
+        }
+        
+        // Don't trigger if preview is showing and clicking on image
+        if (previewContainer.is(':visible') && $(e.target).is('#preview-image')) {
+            return;
+        }
+        
+        triggerFileInput();
+    }
+    
+    function handleBrowseClick(e) {
+        e.stopPropagation();
+        triggerFileInput();
+    }
+    
+    function handleChangeFile(e) {
+        e.stopPropagation();
+        triggerFileInput();
+    }
+    
+    function handleFileInputChange() {
+        const files = fileInput[0].files;
+        if (files && files.length > 0) {
+            handleFiles(files);
+        }
+    }
+    
+    function handleRemoveImage(e) {
+        e.stopPropagation();
+        clearFileSelection();
+    }
+    
+    function handleFormSubmit() {
+        uploadLoading.removeClass('hidden');
+        submitBtn.prop('disabled', true);
+    }
+    
+    function triggerFileInput() {
+        // Reset file input to allow selecting the same file again
+        fileInput.val('');
+        fileInput[0].click();
+    }
+    
+    function handleFiles(files) {
+        const file = files[0];
+        
+        if (!validateFile(file)) {
+            return;
+        }
+        
+        // Update file input
+        try {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            fileInput[0].files = dt.files;
+        } catch (e) {
+            // Fallback for older browsers
+            console.log('DataTransfer not supported, file input may not be updated');
+        }
+        
+        displayFilePreview(file);
+    }
+    
+    function validateFile(file) {
+        // Check file type
+        const validTypes = [
+            'image/jpeg', 
+            'image/jpg', 
+            'image/png', 
+            'image/webp',
+            'image/bmp',
+            'image/tiff'
+        ];
+        
+        if (!validTypes.includes(file.type.toLowerCase())) {
+            showError('Please select a valid image file (JPG, PNG, WebP, BMP, TIFF).');
+            return false;
+        }
+        
+        // Check file size (25MB)
+        const maxSize = 25 * 1024 * 1024;
+        if (file.size > maxSize) {
+            showError('File is too large. Please select an image under 25MB.');
+            return false;
+        }
+        
+        // Check minimum file size (1KB)
+        if (file.size < 1024) {
+            showError('File is too small. Please select a valid image file.');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    function displayFilePreview(file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            // Hide upload content
+            uploadContent.addClass('hidden');
+            
+            // Show preview
+            previewImage.attr('src', e.target.result);
+            fileName.text(file.name);
+            
+            // Format file info
+            const sizeKB = Math.round(file.size / 1024);
+            const sizeText = sizeKB > 1024 ? 
+                (sizeKB / 1024).toFixed(1) + ' MB' : 
+                sizeKB + ' KB';
+            
+            fileInfo.text(`${sizeText} • Loading...`);
+            
+            // Show preview container
+            previewContainer.removeClass('hidden');
+            
+            // Get and update dimensions asynchronously
+            getImageDimensions(e.target.result).then((dimensions) => {
+                fileInfo.text(`${sizeText} • ${dimensions}`);
+            });
+            
+            // Enable submit button
+            submitBtn.prop('disabled', false);
+        };
+        
+        reader.onerror = function() {
+            showError('Error reading file. Please try again.');
+        };
+        
+        reader.readAsDataURL(file);
+    }
+    
+    function getImageDimensions(src) {
+        // Create a promise to get image dimensions after load
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.onload = function() {
+                resolve(`${img.width}×${img.height}px`);
+            };
+            img.onerror = function() {
+                resolve('Image file');
+            };
+            img.src = src;
+        }).then((dimensions) => {
+            // Update file info with dimensions
+            return dimensions;
+        }).catch(() => {
+            return 'Image file';
+        });
+    }
+    
+    function clearFileSelection() {
+        // Clear file input
+        fileInput.val('');
+        
+        // Hide preview
+        previewContainer.addClass('hidden');
+        
+        // Show upload content
+        uploadContent.removeClass('hidden');
+        
+        // Disable submit button
+        submitBtn.prop('disabled', true);
+        
+        // Clear preview
+        previewImage.attr('src', '');
+        fileName.text('');
+        fileInfo.text('');
+    }
+    
+    function showDragOverlay() {
+        dragOverlay.removeClass('hidden');
+        dropZone.addClass('border-primary bg-blue-50');
+    }
+    
+    function hideDragOverlay() {
+        dragOverlay.addClass('hidden');
+        dropZone.removeClass('border-primary bg-blue-50');
+    }
+    
+    function showError(message) {
+        // Create a toast-like error notification
+        const errorToast = $(`
+            <div class="fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>${message}</span>
+                    <button class="ml-4 hover:bg-red-600 rounded p-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `);
+        
+        $('body').append(errorToast);
+        
+        // Animate in
+        setTimeout(() => {
+            errorToast.removeClass('translate-x-full');
+        }, 100);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+            errorToast.addClass('translate-x-full');
+            setTimeout(() => {
+                errorToast.remove();
+            }, 300);
+        }, 5000);
+        
+        // Close on click
+        errorToast.find('button').on('click', () => {
+            errorToast.addClass('translate-x-full');
+            setTimeout(() => {
+                errorToast.remove();
+            }, 300);
+        });
+        
+        clearFileSelection();
+    }
+    
+    // Global drag and drop prevention
+    $(window).on('dragover drop', function(e) {
+        e.preventDefault();
+        return false;
+    });
+});
+</script>
+{% endblock %}

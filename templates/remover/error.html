@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fade-in max-w-2xl mx-auto text-center">
+    <!-- Error Icon -->
+    <div class="mb-8">
+        <div class="w-24 h-24 mx-auto mb-6 bg-red-100 rounded-full flex items-center justify-center">
+            <svg class="w-12 h-12 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+            </svg>
+        </div>
+        
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Processing Failed</h1>
+        <p class="text-lg text-gray-600 mb-8">
+            We encountered an issue while processing your image. Please try again with a different image or check the requirements below.
+        </p>
+    </div>
+
+    <!-- Error Message -->
+    <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8 text-left">
+        <h3 class="text-lg font-semibold text-red-900 mb-3">Error Details</h3>
+        <p class="text-red-800">{{ error_message }}</p>
+    </div>
+
+    <!-- Troubleshooting -->
+    <div class="bg-gray-50 rounded-lg border border-gray-200 p-6 mb-8 text-left">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Troubleshooting Tips</h3>
+        <ul class="space-y-3 text-gray-700">
+            <li class="flex items-start space-x-3">
+                <svg class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Make sure your image is under 10MB in size</span>
+            </li>
+            <li class="flex items-start space-x-3">
+                <svg class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Use JPG, PNG, or WebP format only</span>
+            </li>
+            <li class="flex items-start space-x-3">
+                <svg class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Ensure the image is at least 50x50 pixels</span>
+            </li>
+            <li class="flex items-start space-x-3">
+                <svg class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Try images with clear subject-to-background contrast</span>
+            </li>
+            <li class="flex items-start space-x-3">
+                <svg class="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Check your internet connection and try again</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="space-y-4">
+        <a href="{% url 'remover:home' %}" 
+           class="inline-flex items-center justify-center w-full px-6 py-3 bg-primary hover:bg-secondary text-white font-bold rounded-lg transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path>
+            </svg>
+            Try Another Image
+        </a>
+        
+        <button onclick="window.location.reload()" 
+                class="inline-flex items-center justify-center w-full px-6 py-3 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 font-medium rounded-lg transition-colors">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+            Retry This Image
+        </button>
+    </div>
+
+    <!-- Help Text -->
+    <div class="mt-8 text-sm text-gray-600">
+        <p>
+            Still having issues? The AI works best with images that have a clear subject and distinct background. 
+            Portrait photos and product images typically work very well.
+        </p>
+    </div>
+</div>
+{% endblock %}
