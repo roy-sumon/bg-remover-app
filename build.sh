@@ -3,20 +3,20 @@
 
 set -o errexit  # exit on error
 
-echo "🔥 Starting Render.com build process..."
+echo "Starting Render.com build process..."
 
 # Install Python dependencies
-echo "📦 Installing Python dependencies..."
+echo "Installing Python dependencies..."
 pip install --upgrade pip
 pip install -r requirements.txt
 
-echo "🗃️ Collecting static files..."
+echo "Collecting static files..."
 python manage.py collectstatic --no-input
 
-echo "🔄 Running database migrations..."
+echo "Running database migrations..."
 python manage.py migrate
 
-echo "👤 Creating superuser if needed..."
+echo "Creating superuser if needed..."
 if [ "$DJANGO_SUPERUSER_EMAIL" ]; then
     python manage.py shell -c "
 from django.contrib.auth import get_user_model
@@ -33,7 +33,7 @@ else:
 "
 fi
 
-echo "🧹 Cleaning up old processed images..."
+echo "Cleaning up old processed images..."
 python manage.py cleanup_old_images
 
-echo "✅ Build completed successfully!"
+echo "Build completed successfully!"
