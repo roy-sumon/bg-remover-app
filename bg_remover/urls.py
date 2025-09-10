@@ -48,7 +48,7 @@ else:
     
     # Add media URL pattern for production
     urlpatterns += [
-        path(settings.MEDIA_URL.lstrip('/'), protected_media_serve, {
+        path(settings.MEDIA_URL.lstrip('/') + '<path:path>', protected_media_serve, {
             'document_root': settings.MEDIA_ROOT,
         }),
     ]

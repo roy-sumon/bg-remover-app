@@ -34,6 +34,6 @@ else:
 fi
 
 echo "Cleaning up old processed images..."
-python manage.py cleanup_old_images
+python manage.py cleanup_files
 
 echo "Build completed successfully!"

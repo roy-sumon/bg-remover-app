@@ -156,7 +156,7 @@ Run these commands via Render's shell or through Django admin:
 python manage.py cleanup_media --days 1 --force
 
 # Clean up old image processing records
-python manage.py cleanup_old_images
+python manage.py cleanup_files
 ```
 
 ### 6.2 Database Management

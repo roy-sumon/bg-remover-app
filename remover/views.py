@@ -110,7 +110,7 @@ def process_image_ajax(request, pk):
                 processing.processed_image.save(
                     f'processed_{processing.id}.png',
                     processed_image,
-                    save=False
+                    save=True
                 )
                 processing.status = 'completed'
                 processing.save()
@@ -156,7 +156,19 @@ class ResultView(View):
         
         # Check if processed image exists
         if not processing.processed_image:
+            logger.error(f"Processed image missing for processing {processing.id}")
             messages.error(request, 'Processed image not found.')
+            return redirect('remover:home')
+        
+        # Check if processed image file exists on disk
+        try:
+            if not processing.processed_image.file:
+                logger.error(f"Processed image file missing on disk for processing {processing.id}")
+                messages.error(request, 'Processed image file not found on server.')
+                return redirect('remover:home')
+        except Exception as e:
+            logger.error(f"Error checking processed image file for processing {processing.id}: {str(e)}")
+            messages.error(request, 'Error accessing processed image.')
             return redirect('remover:home')
         
         background_form = BackgroundOptionForm()

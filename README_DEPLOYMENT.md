@@ -99,7 +99,7 @@ background-remover/
 ├── remover/
 │   ├── management/commands/
 │   │   ├── cleanup_media.py    # Media cleanup
-│   │   └── cleanup_old_images.py
+│   │   └── cleanup_files.py
 │   ├── models.py           # Database models
 │   ├── views.py            # Application views
 │   ├── forms.py            # Upload forms

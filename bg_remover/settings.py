@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('DJANGO_SECRET_KEY', default='django-insecure-u6&xm6t36z#b!$q#@$v!4x9q7p)m&1l^i9i8&$6@%x7c0w9%xm')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
+DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
 
 # Production vs Development settings detection
 IS_PRODUCTION = config('RENDER', default=False, cast=bool)  # Render sets this automatically
@@ -35,7 +35,7 @@ IS_PRODUCTION = config('RENDER', default=False, cast=bool)  # Render sets this a
 if IS_PRODUCTION:
     ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='*').split(',')
 else:
-    ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+    ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver').split(',')
 
 
 # Application definition
