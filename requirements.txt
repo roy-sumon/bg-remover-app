@@ -1,10 +1,27 @@
+# Django Framework
 Django==4.2.7
+
+# Image Processing
 Pillow>=10.0.0
-requests>=2.31.0
-python-decouple>=3.8
-gunicorn>=21.2.0
-whitenoise>=6.6.0
 rembg>=2.0.50
 numpy>=1.21.0
-opencv-python>=4.8.0
-onnxruntime>=1.22.0
+opencv-python-headless>=4.8.0  # Headless version for server deployment
+onnxruntime>=1.15.0
+scikit-image>=0.21.0
+
+# Web Server & Production
+gunicorn>=21.2.0
+whitenoise>=6.6.0
+
+# Database
+psycopg2-binary>=2.9.7  # PostgreSQL adapter
+dj-database-url>=2.1.0  # Database URL parsing
+
+# Environment & Configuration
+python-decouple>=3.8
+
+# HTTP & Utilities
+requests>=2.31.0
+
+# Caching (optional but recommended)
+django-redis>=5.4.0
