@@ -29,11 +29,21 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default='django-insecure-u6&xm6t36z#b!$
 DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
 
 # Production vs Development settings detection
-IS_PRODUCTION = config('RENDER', default=False, cast=bool)  # Render sets this automatically
+# Check for Railway or Render deployment
+IS_RAILWAY = config('RAILWAY_ENVIRONMENT', default=None) is not None  # Railway sets this to 'production'
+IS_RENDER = config('RENDER', default=False, cast=bool)  # Render sets this automatically
+IS_PRODUCTION = IS_RAILWAY or IS_RENDER
 
 # Allowed hosts configuration
 if IS_PRODUCTION:
-    ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='*').split(',')
+    # Get allowed hosts from environment variable, with Railway domain as fallback
+    allowed_hosts_str = config('DJANGO_ALLOWED_HOSTS', default='web-production-a944f.up.railway.app,*')
+    ALLOWED_HOSTS = allowed_hosts_str.split(',')
+    
+    # Ensure Railway domain is always included
+    railway_domain = 'web-production-a944f.up.railway.app'
+    if railway_domain not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(railway_domain)
 else:
     ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver').split(',')
 
@@ -87,14 +97,24 @@ WSGI_APPLICATION = 'bg_remover.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 if IS_PRODUCTION:
-    # Production database (PostgreSQL on Render)
-    DATABASES = {
-        'default': dj_database_url.parse(
-            config('DATABASE_URL'),
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
-    }
+    # Production database (PostgreSQL on Railway/Render)
+    database_url = config('DATABASE_URL', default=None)
+    if database_url:
+        DATABASES = {
+            'default': dj_database_url.parse(
+                database_url,
+                conn_max_age=600,
+                conn_health_checks=True,
+            )
+        }
+    else:
+        # Fallback to SQLite if DATABASE_URL is not provided
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 else:
     # Development database (SQLite)
     DATABASES = {
