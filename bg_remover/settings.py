@@ -35,17 +35,22 @@ IS_RENDER = config('RENDER', default=False, cast=bool)  # Render sets this autom
 IS_PRODUCTION = IS_RAILWAY or IS_RENDER
 
 # Allowed hosts configuration
+# Always include these essential hosts
+ESSENTIAL_HOSTS = ['localhost', '127.0.0.1', 'web-production-a944f.up.railway.app']
+
 if IS_PRODUCTION:
-    # Get allowed hosts from environment variable, with Railway domain as fallback
-    allowed_hosts_str = config('DJANGO_ALLOWED_HOSTS', default='web-production-a944f.up.railway.app,*')
-    ALLOWED_HOSTS = allowed_hosts_str.split(',')
+    # Get additional hosts from environment variable
+    additional_hosts_str = config('DJANGO_ALLOWED_HOSTS', default='')
+    additional_hosts = [host.strip() for host in additional_hosts_str.split(',') if host.strip()]
     
-    # Ensure Railway domain is always included
-    railway_domain = 'web-production-a944f.up.railway.app'
-    if railway_domain not in ALLOWED_HOSTS:
-        ALLOWED_HOSTS.append(railway_domain)
+    # Combine essential hosts with additional hosts
+    ALLOWED_HOSTS = ESSENTIAL_HOSTS + additional_hosts
 else:
-    ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='localhost,127.0.0.1,testserver').split(',')
+    # For development, include testserver as well
+    ALLOWED_HOSTS = ESSENTIAL_HOSTS + ['testserver']
+
+# Remove duplicates while preserving order
+ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS))
 
 
 # Application definition
