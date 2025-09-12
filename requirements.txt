@@ -10,11 +10,11 @@ onnxruntime>=1.15.0
 scikit-image>=0.21.0
 
 # Web Server & Production
-gunicorn>=21.2.0
+gunicorn>=23.0.0
 whitenoise>=6.6.0
 
 # Database
-psycopg2-binary>=2.9.7  # PostgreSQL adapter
+psycopg2-binary>=2.9.10  # PostgreSQL adapter
 dj-database-url>=2.1.0  # Database URL parsing
 
 # Environment & Configuration
